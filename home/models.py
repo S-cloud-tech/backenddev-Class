@@ -15,3 +15,18 @@ class GeneralInfo(models.Model):
     def __str__(self):
         return self.site_name
 
+
+class Service(models.Model):
+    service_name = models.CharField(max_length=50)
+    service_description = models.TextField()
+
+    def __str__(self):
+        return self.service_name
+
+
+class FrequentlyAskedQuestion(models.Model):
+    question = models.CharField(max_length=255)
+    answer = models.TextField()
+
+    def __str__(self):
+        return self.question
