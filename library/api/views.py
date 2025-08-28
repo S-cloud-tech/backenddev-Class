@@ -1,14 +1,20 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from ..models import Book, Borrower, BorrowRecord, Fine
-from .serializers import (
-    BookSerializer,
-    BorrowerSerializer,
-    BorrowRecordSerializer,
-    FineSerializer,
-)
+from ..models import *
+from .serializers import *
 from django.utils import timezone
+
+
+# -------------- CATEGORY VIEWS -----------------
+class CategoryListView(generics.ListCreateAPIView):
+    queryset =Category.objects.all()
+    serializer_class = CategorySerializer
+
+
+class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
 
 # ------------------ BOOK VIEWS ------------------
