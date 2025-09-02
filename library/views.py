@@ -1,17 +1,86 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.utils import timezone
+from django.db.models import Count
 from .models import *
+from .forms import *
+
+def library_home(request):
+    # 1. Number of books borrowed (all time)
+    total_borrowed = BorrowRecord.objects.count()
+
+    # 2. Number of books read (returned books)
+    total_read = BorrowRecord.objects.filter(returned_date__isnull=False).count()
+
+    # 3. Trending books (top 5 by borrow count)
+    # trending_books = (
+    #     Book.objects.annotate(borrow_count=Count("borrow_record"))
+    #     .order_by("-borrow_count")[:5]
+    # )
+
+    # 4. Top authors (based on borrow counts of their books)
+    # top_authors = (
+    #     Book.objects.annotate(borrow_count=Count("book__borrow"))
+    #     .order_by("-borrow_count")[:5]
+    # )
+
+    # 5. Recommendations (books user hasn’t borrowed but others did)
+    recommendations = []
+    if request.user.is_authenticated:
+        borrowed_books = BorrowRecord.objects.filter(borrower=request.user).values_list(
+            "book_id", flat=True
+        )
+        recommendations = (
+            Book.objects.exclude(id__in=borrowed_books)
+            .annotate(borrow_count=Count("borrow"))
+            .order_by("-borrow_count")[:5]
+        )
+
+    context = {
+        "total_borrowed": total_borrowed,
+        "total_read": total_read,
+        "recommendations": recommendations,
+    }
+    return render(request, "home/index.html")
 
 # 1. List all available books
 def available_books(request):
-    books = Book.objects.filter(is_available=True)
-    return render(request, "library/available_books.html", {"books": books})
+    books = Book.objects.all()
+    return render(request, "book/book_list.html", {"books": books})
+
+def add_book(request):
+    if request.method == "POST":
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(request, "library:book_list", {"books": Book.objects.all()})
+        else:
+            return render(request, "book/book_form.html", {"form": form})
+    else:
+        form = BookForm()
+    return render(request, "book/book_form.html", {"form": form})
+
+def edit_book(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    if request.method == "POST":
+        form = BookForm(request.POST, instance=book)
+        if form.is_valid():
+            form.save()
+            return redirect("library:book_list")
+    else:
+        form = BookForm(instance=book)
+    return render(request, "book/book_form.html", {"form": form})
+
+def all_category(request):
+    category = Category.objects.all()
+
+    return render(request, "book/book_category.html", {"category": category})
+
 
 # 2. View details of a book
 def book_detail(request, book_id):
     book = get_object_or_404(Book, id=book_id)
-    return render(request, "library/book_detail.html", {"book": book})
+    return render(request, "book/book_detail.html", {"book": book})
 
 # 3. Borrow a book
 def borrow_book(request, book_id, member_id):

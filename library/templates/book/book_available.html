@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Available Books</h2>
+
+    <a href="{% url 'add_book' %}" class="btn btn-primary mb-3">+ Add New Book</a>
+
+    {% if books %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>ISBN</th>
+                    <th>Published Date</th>
+                    <th>Available</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in book %}
+                <tr>
+                    <td>
+                        <a href="{% url 'book_detail' book.id %}">
+                            {{ book.title }}
+                        </a>
+                    </td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.category }}</td>
+                    <td>{{ book.isbn }}</td>
+                    <td>{{ book.published_date }}</td>
+                    <td>
+                        {% if book.is_available %}
+                            ✅
+                        {% else %}
+                            ❌
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'edit_book' book.id %}" class="btn btn-sm btn-warning">Edit</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No books available yet.</p>
+    {% endif %}
+</div>
+{% endblock content %}
+

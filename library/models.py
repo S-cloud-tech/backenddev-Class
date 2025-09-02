@@ -8,6 +8,7 @@ class Category(models.Model):
         return self.name
 
 class Book(models.Model):
+    images = models.ImageField(upload_to="static/images/book/", null=True)
     title = models.CharField(max_length=255)
     author = models.CharField(max_length=255)
     isbn = models.CharField(max_length=13, unique=True)
@@ -39,7 +40,7 @@ class BorrowRecord(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="borrow_records")
     borrow_date = models.DateTimeField(auto_now_add=True)
     due_date = models.DateTimeField()
-    return_date = models.DateTimeField(blank=True, null=True)
+    returned_date = models.DateTimeField(blank=True, null=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.BORROWED)
 
     def __str__(self):
