@@ -20,7 +20,7 @@ class BorrowerAdmin(admin.ModelAdmin):
 
 @admin.register(BorrowRecord)
 class BorrowRecordAdmin(admin.ModelAdmin):
-    list_display = ["book", "status", "borrow_date", "due_date", "return_date"]
+    list_display = ["book", "status", "borrow_date", "due_date", "returned_date"]
     list_filter = ["status", "borrow_date", "due_date"]
     search_fields = ["book_title"]
 

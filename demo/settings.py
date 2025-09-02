@@ -43,8 +43,13 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'home',
+    'api',
     'library',
+    'todos',
+    # 'users',
 ]
+
+# AUTH_USER_MODEL = 'users.CustomUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
