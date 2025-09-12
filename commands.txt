@@ -31,3 +31,6 @@ python manage.py runserver
 # Create SuperUser for the admin page
 python manage.py createsuperuser
 
+# To auto generate models from an external database in side our app
+py -m manage inspectdb --database=<db name> > <appname>\models.py
+
