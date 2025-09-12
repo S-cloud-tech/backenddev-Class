@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'api',
     'library',
     'todos',
-    # 'users',
+    'users',
 ]
 
 # AUTH_USER_MODEL = 'users.CustomUser'
@@ -88,8 +88,20 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    },
+    'admins': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('ADMIN_DB_NAME'),
+        'USER': config('ADMIN_DB_USERNAME'),
+        'PASSWORD': config('ADMIN_DB_PASSWORD'),
+        'HOST': config('ADMIN_DB_HOST'),
+        'PORT': config('ADMIN_DB_PORT'),
     }
 }
+
+DATABASE_ROUTERS = [
+    'demo.db_router.AdminsDBRouter'
+]
 
 
 # Password validation
