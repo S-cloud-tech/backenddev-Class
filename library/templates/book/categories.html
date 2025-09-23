@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load book_extras %}
+
+{% block content %}
+<div class="flex flex-col flex-1 p-2 gap-3 rounded-xl">
+    <span class="text-2xl font-semibold">Category</span>
+    <p class="text-gray-500">Below are selections you can make</p>
+
+    {% for cat in categories %}
+    <div class="flex flex-col flex-1 p-2 bg-white rounded-xl shadow-md">
+        <div class="flex justify-between my-1">
+            <span class="font-medium py-1">{{ cat.name }}</span>
+        </div>
+        <div class="flex gap-2 flex-wrap">
+            {% comment %} for book in cat.books.all[slice:":5"] will display only 5 books for that category {% endcomment %}
+            {% for book in cat.books.all|slice:":5" %}
+                {% include "components/book_card.html" with book=book %}
+            {% empty %}
+                <span class="text-gray-400">No books in this category</span>
+            {% endfor %}
+
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}

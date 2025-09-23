@@ -1,0 +1,19 @@
+{%extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="flex flex-col flex-1 p-2 bg-white rounded-xl shadow-md">
+    <div class="flex justify-between my-1">
+        <span class="font-medium py-1">Trending Books</span>
+        <a href="{% url 'library:add_book' %}" class="flex items-center gap-3 px-2 py-1 font-light rounded-lg bg-white border border-slate-300
+                    hover:bg-black hover:text-white">
+            Add Book
+        </a>
+    </div>
+    <div class="grid grid-cols-5 gap-2 m-2 px-2 py-2 overflow-x-auto">
+        {% for book in books %}
+            {% include "components/book_card.html" with book=book %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}
