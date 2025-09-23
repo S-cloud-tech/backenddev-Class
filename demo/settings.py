@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 from decouple import config
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -99,6 +100,8 @@ DATABASES = {
     }
 }
 
+DATABASES['default'] = dj_database_url.parse(config('DB_URL'))
+
 DATABASE_ROUTERS = [
     'demo.db_router.AdminsDBRouter'
 ]
@@ -144,3 +147,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": config('REDIS_LOCATION'),
+    }
+}
+
