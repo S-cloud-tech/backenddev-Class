@@ -5,7 +5,7 @@ from django.db.models import Count
 from .models import *
 from .forms import *
 
-def library_home(request):
+def home(request):
     # 1. Number of books borrowed (all time)
     total_borrowed = BorrowRecord.objects.count()
 
@@ -14,7 +14,7 @@ def library_home(request):
 
     # 3. Trending books (top 5 by borrow count)
     # trending_books = (
-    #     Book.objects.annotate(borrow_count=Count("borrow_record"))
+    #     Book.objects.annotate(borrow_count=Count("borrow_records"))
     #     .order_by("-borrow_count")[:5]
     # )
 
@@ -25,28 +25,33 @@ def library_home(request):
     # )
 
     # 5. Recommendations (books user hasn’t borrowed but others did)
-    recommendations = []
-    if request.user.is_authenticated:
-        borrowed_books = BorrowRecord.objects.filter(borrower=request.user).values_list(
-            "book_id", flat=True
-        )
-        recommendations = (
-            Book.objects.exclude(id__in=borrowed_books)
-            .annotate(borrow_count=Count("borrow"))
-            .order_by("-borrow_count")[:5]
-        )
+    # recommendations = []
+    # if request.user.is_authenticated:
+    #     borrowed_books = BorrowRecord.objects.filter("-borrower").values_list(
+    #         "book_id", flat=True
+    #     )
+    #     recommendations = (
+    #         Book.objects.exclude(id__in=borrowed_books)
+    #         .annotate(borrow_count=Count("borrow"))
+    #         .order_by("-borrow_count")[:5]
+    #     )
 
     context = {
         "total_borrowed": total_borrowed,
         "total_read": total_read,
-        "recommendations": recommendations,
     }
-    return render(request, "home/index.html")
+    return render(request, "home/index.html", context)
 
 # 1. List all available books
 def available_books(request):
-    books = Book.objects.all()
+    books = Book.objects.filter(is_available=True)
     return render(request, "book/book_list.html", {"books": books})
+
+def book(request):
+    template_name = "book/book.html"
+    books = Book.objects.all()
+
+    return render(request, template_name, {"books": books})
 
 def add_book(request):
     if request.method == "POST":
@@ -78,13 +83,13 @@ def all_category(request):
 
 
 # 2. View details of a book
-def book_detail(request, book_id):
-    book = get_object_or_404(Book, id=book_id)
+def book_detail(request, pk):
+    book = get_object_or_404(Book, pk=pk)
     return render(request, "book/book_detail.html", {"book": book})
 
 # 3. Borrow a book
-def borrow_book(request, book_id, member_id):
-    book = get_object_or_404(Book, id=book_id)
+def borrow_book(request, pk, member_id):
+    book = get_object_or_404(Book, pk=pk)
     # member = get_object_or_404(Member, id=member_id)
 
     if book.is_available:

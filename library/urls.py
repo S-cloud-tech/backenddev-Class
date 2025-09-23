@@ -5,10 +5,11 @@ app_name = "library"
 
 urlpatterns = [
     # Main Page endpoint
-    path("", views.library_home, name="library_home"),
+    path("", views.home, name="home"),
 
     # Book endpoints
-    path("books/", views.available_books, name="available_books"),
+    path("book/", views.available_books, name="book"),
+    path("available_books/", views.available_books, name="available_books"),
     path("books/<int:pk>/", views.book_detail, name="book_detail"),
     path("add_book/", views.add_book, name="add_book"),
 

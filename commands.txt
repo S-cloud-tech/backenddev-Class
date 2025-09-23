@@ -34,3 +34,7 @@ python manage.py createsuperuser
 # To auto generate models from an external database in side our app
 py -m manage inspectdb --database=<db name> > <appname>\models.py
 
+
+To update our requirements.txt file
+pip install pur
+pur -r requirements.txt

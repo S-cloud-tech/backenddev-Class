@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -18,12 +19,37 @@ class Book(models.Model):
     available_copies = models.PositiveIntegerField(default=1)
     is_available = models.BooleanField(default=True)
     added_on = models.DateTimeField()
+    added_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    rating = models.DecimalField(max_length=5, max_digits=3, decimal_places=1, default=0.0)
+    read_count = models.PositiveIntegerField(default=0)  # how many times borrowed/read
+    published_at = models.DateField(null=True, blank=True)  # for recency
+    liked_by = models.ManyToManyField(User, related_name="liked_books", blank=True)
+    saved_by = models.ManyToManyField(User, related_name="saved_books", blank=True)
+
+    class Meta:
+        permissions = [
+            ("can_archive_book", "Can archive books"),
+            ("can_save_book", "Can save books"),
+        ]
+    
+    def average_rating(self):
+        ratings = self.reviews.all().values_list("rating", flat=True)
+        return round(sum(ratings) / len(ratings), 1) if ratings else 0
+
+    def update_rating(self):
+        reviews = self.reviews.all()
+        if reviews.exists():
+            self.rating = sum(r.rating for r in reviews) / reviews.count()
+        else:
+            self.rating = 0
+        self.save()
+    
 
     def __str__(self):
         return f"{self.title} by {self.author}"
 
 class Borrower(models.Model):
-    name = models.CharField(max_length=200)
+    user = models.ForeignKey(User,on_delete=models.CASCADE, null=True)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15, blank=True, null=True)
 
@@ -45,6 +71,17 @@ class BorrowRecord(models.Model):
 
     def __str__(self):
         return f"{self.book.title} ({self.status})"
+
+class Review(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="reviews")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    review_text = models.TextField()
+    rating = models.DecimalField(max_length=5, max_digits=3, decimal_places=1, default=0.0)
+    comment = models.TextField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.book.title} ({self.rating})"
 
 class Fine(models.Model):
     borrow_record = models.OneToOneField(BorrowRecord, on_delete=models.CASCADE, related_name="fine")

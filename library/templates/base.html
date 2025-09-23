@@ -1,50 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Library Management System</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
+    <link 
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" 
+    rel="stylesheet">
+    <title>DEV Library</title>
 </head>
-<body class="font-sans bg-gray-100">
-  <div class="container mx-auto">
-    <nav class="flex justify-between items-center bg-gray-900 p-4 text-white">
-      <div class="text-2xl">
-        <a href="{% url "library:library_home" %}">LiBDev</a>
-      </div>
-      <div>
-        <input type="text" placeholder="Search for a book..." class="p-2 rounded">
-      </div>
-      <div class="space-x-4">
-        <a href="{% url "library:library_home" %}" class="hover:underline">Overview</a>
-        <a href="{% url "library:all_category" %}" class="hover:underline">Categories</a>
-        <a href="{% url "library:available_books" %}" class="hover:underline">Books</a>
-        <a href="#" class="hover:underline">Logout</a>
-      </div>
-    </nav>
 
-    {% block content %}
-    
-    {% endblock content %}
+<body>
+    <div
+        class="ml-54 flex justify-between items-center border-b p-2 px-4 border-b-slate-300 dark:border-b-slate-600 bg-white dark:bg-[#0d1117]">
+        <form method="get" action="#" class="p-2 bg-white  rounded-lg">
+            <input type="search" class="p-2 bg-white rounded-lg" placeholder="Search books, authors, categories..." name="q" id="">
+        </form>
+        <el-dropdown class="flex items-center justify-between gap-4">
+            <button onClick="#" class="flex justify-between gap-4 p-2 text-white rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                <span class="text-white font-semibold text-xl pt-1">{{user.username}}</span>
+                <img src="https://placehold.co/30x30" class="rounded-full my-1" alt="">
+            </button>
 
-    <footer class="bg-blue-600 text-white p-6 text-center">
-      <div class="flex justify-around mb-4">
-        <div>
-          <h3 class="text-xl mb-2">Library</h3>
-          <p>The library provides persons from all over the world with a wide selection of books, programs, and resources.</p>
+            <el-menu anchor="bottom end" popover class="w-56 origin-top-right rounded-md bg-gray-800 outline-1 -outline-offset-1 outline-white/10 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
+                <div class="py-1">
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:text-white focus:outline-hidden">Profile</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:text-white focus:outline-hidden">Support</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:text-white focus:outline-hidden">License</a>
+                    <form action="{% url "logout" %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="block w-full px-4 py-2 text-left text-sm text-gray-300 focus:bg-white/5 focus:text-white focus:outline-hidden">logout</button>
+                    </form>
+                </div>
+            </el-menu>
+        </el-dropdown>
+    </div>
+    <aside
+        class="md:w-54 fixed top-0 left-0 h-full z-40 bg-[#0d1117] text-white border border-slate-300 dark:border-slate-800 hover:shadow-lg transition-shadow border-r border-slate-300 dark:border-slate-700 p-2 transition-transform duration-300 ease-in-out ">
+        <div class="flex flex-col justify-between h-full">
+            <div class="flex flex-col">
+                <a href="#" class="flex items-center gap-3 px-2 my-2 rounded-lg">
+                    <span class="font-bold text-2xl">My Library</span>
+                </a>
+                <hr class="border-gray-500 mx-[-8px] mb-4">
+                <a href="#"  class="flex items-center gap-3  px-4 py-2 rounded-lg mb-2 bg-white text-black"><i class="fa-solid fa-house"></i>Overview</a>
+                <a href="{% url "library:all_category" %}" class="flex items-center gap-3  px-4 py-2 rounded-lg mb-2 text-gray-500 hover:bg-black">Category</a>
+                <a href="{% url "library:book" %}" class="flex items-center gap-3  px-4 py-2 rounded-lg mb-2 text-gray-500 hover:bg-black">My Books</a>
+                <a href="" class="flex items-center gap-3  px-4 py-2 rounded-lg mb-2 text-gray-500 hover:bg-black">Favourite</a>
+                <a href="" class="flex items-center gap-3  px-4 py-2 rounded-lg mb-2 text-gray-500 hover:bg-black"><i class="fa-solid fa-bell"></i>Notification</a>
+
+            </div>
+            <div class="py-2  text-white">
+                <hr class="border-gray-500 mx-[-8px] mb-4">
+                <form action="{% url "logout" %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="flex items-center gap-2 px-4 py-2 rounded-lg text-red-600
+                        hover:bg-red-100 dark:hover:bg-red-800 text-white">
+                        <i class="fa-solid fa-right-from-bracket"></i>logout
+                    </button>
+                </form>
+            </div>
+
         </div>
-        <div>
-          <h3 class="text-xl mb-2">Company</h3>
-          <p><a href="{% url "library:library_home" %}" class="hover:underline">Home</a></p>
-          <p><a href="#" class="hover:underline">About</a></p>
-          <p><a href="#" class="hover:underline">Research</a></p>
+    </aside>
+    <div class="md:ml-54 p-4 min-h-screen bg-slate-100">
+        {% block content %}
+
+        {% endblock content %}
+    </div>
+    <div
+        class="ml-54 text-teal justify-between flex bottom-0 left-0 bg-teal-500 p-4 border-t border-slate-300 dark:border-slate-600">
+        <div class="m-5 flex-1 flex-col">DEV LIBRARY
+            <span class="text-sm">Your one stop for all library needs</span>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorem assumenda consequuntur soluta eaque a
+            ducimus beatae fugiat aut odit commodi libero corrupti laborum consequatur, quo aperiam temporibus magnam
+            cupiditate tenetur!
         </div>
-        <div>
-          <h3 class="text-xl mb-2">Contact Us</h3>
-          <p><a href="mailto:info@booklib.com" class="hover:underline">info@booklib.com</a></p>
-          <p><a href="tel:+1234567890" class="hover:underline">+1 234 567 890</a></p>
+        <div class="m-5 flex-1 flex-col">© 2024 All rights reserved
+            <span class="text-sm">Library Management System</span>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.
         </div>
-      </div>
-      <p class="text-sm">© 2023 Deuthly. All Right Reserved.</p>
-    </footer>
-  </div>
+        <div class="m-5 flex-1 flex-col">Faqs
+            <span class="text-sm">Help center</span>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".read-more").forEach(button => {
+                button.addEventListener("click", function() {
+                    const container = this.closest("div");
+                    const shortText = container.querySelector(".short-text");
+                    const fullText = container.querySelector(".full-text");
+
+                    if (fullText.classList.contains("hidden")) {
+                        shortText.classList.add("hidden");
+                        fullText.classList.remove("hidden");
+                        requestAnimationFrame(() => {
+                            fullText.classList.remove("opacity-0");
+                        });
+                        this.textContent = "Read less";
+                    } else {
+                        shortText.classList.remove("hidden");
+                        fullText.classList.add("opacity-0");
+                        fullText.addEventListener("transitionend", () => {
+                            if (fullText.classList.contains("opacity-0")) {
+                                fullText.classList.add("hidden");
+                                shortText.classList.remove("hidden");
+                            }
+                        }, { once: true });
+                        this.textContent = "Read more";
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
