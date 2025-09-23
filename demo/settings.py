@@ -31,7 +31,8 @@ DEBUG = True
 ALLOWED_HOSTS = ['backenddev-class-production.up.railway.app', '127.0.0.1:8000']
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
-    "backenddev-class-production.up.railway.app",
+    '0.0.0.0:8000',
+    'backenddev-class-production.up.railway.app',
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
