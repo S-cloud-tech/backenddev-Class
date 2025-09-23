@@ -29,6 +29,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = ['backenddev-class-production.up.railway.app', '127.0.0.1:8000']
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Application definition
